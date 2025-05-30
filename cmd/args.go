@@ -39,10 +39,8 @@ func GetDescribeArgs(args []string) (DescribeArgs, error) {
 	describeCmd := flag.NewFlagSet("describe", flag.ContinueOnError)
 
 	namespace := describeCmd.String("namespace", "", "Target namespace (required)")
-	describeCmd.String("n", "", "Shorthand for --namespace")
 	
 	outputFile := describeCmd.String("output", "yaml", "Output format: yaml or json (default yaml)")
-	describeCmd.String("o", "yaml", "Shorthand for --output")
 
 	if err := describeCmd.Parse(args); err != nil {
 		log.Fatal("Error parsing flags:", err)

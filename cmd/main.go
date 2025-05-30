@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"os"
+	"github.com/destrex271/zpo/internal"
 )
 
 func main(){
@@ -17,13 +18,14 @@ func main(){
 		if err != nil {
 			log.Fatal("Error parsing list arguments: ", err)
 		}
-		log.Println(listArgs)
+		internal.ListPostgresqlClusters(listArgs.Namespace)
+
 	case "describe":
 		log.Println(args)
 		describeArgs, err := GetDescribeArgs(args)
 		if err != nil {
 			log.Fatal("Error parsing describe args: ", err)
 		}
-		log.Printf("DescribeArgs: %+v\n", describeArgs)
+		internal.DescribePostgresqlCluster(describeArgs.Namespace, describeArgs.ClusterName, describeArgs.OutputFile)
 	}
 }

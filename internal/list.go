@@ -1,0 +1,42 @@
+package internal
+
+import (
+	"context"
+	"fmt"
+
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime/schema"
+)
+
+var postgresGVR = schema.GroupVersionResource{
+	Group:    "acid.zalan.do",
+	Version:  "v1",
+	Resource: "postgresqls",
+}
+
+func ListPostgresqlClusters(namespace string) error {
+	client, err := GetDynamicClient()
+	if err != nil {
+		return err
+	}
+
+	var list *unstructured.UnstructuredList
+	if namespace == "" {
+		list, err = client.Resource(postgresGVR).List(context.TODO(), metav1.ListOptions{})
+	} else {
+		list, err = client.Resource(postgresGVR).Namespace(namespace).List(context.TODO(), metav1.ListOptions{})
+	}
+	if err != nil {
+		return err
+	}
+
+	for _, item := range list.Items {
+		name := item.GetName()
+		ns := item.GetNamespace()
+		status, _, _ := unstructured.NestedString(item.Object, "status", "PostgresClusterStatus")
+		fmt.Printf("Name: %-30s Namespace: %-20s Status: %s\n", name, ns, status)
+	}
+	return nil
+}
+
