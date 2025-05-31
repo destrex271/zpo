@@ -8,8 +8,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func DescribePostgresqlCluster(namespace, name, output string) error {
-	client, err := GetDynamicClient()
+func DescribePostgresqlCluster(namespace, name, output string, istest bool) error {
+	client, err := GetDynamicClient(false)
 	if err != nil {
 		return err
 	}

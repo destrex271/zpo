@@ -10,8 +10,8 @@ import (
 
 
 
-func ListPostgresqlClusters(namespace string) error {
-	client, err := GetDynamicClient()
+func ListPostgresqlClusters(namespace string, istest bool) error {
+	client, err := GetDynamicClient(istest)
 	if err != nil {
 		return err
 	}
