@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
+
 	"github.com/destrex271/zpo/internal"
 )
 
@@ -29,9 +31,11 @@ func main(){
 		if err != nil {
 			log.Fatal("Error parsing describe args: ", err)
 		}
-		err = internal.DescribePostgresqlCluster(describeArgs.Namespace, describeArgs.ClusterName, describeArgs.OutputFile, false)
+		output, err := internal.DescribePostgresqlCluster(describeArgs.Namespace, describeArgs.ClusterName, describeArgs.OutputFile, false)
 		if err != nil{
 			log.Fatal("Error executing describe: ", err.Error())
 		}
+
+		fmt.Println(output)
 	}
 }

@@ -17,6 +17,8 @@ var postgresGVR = schema.GroupVersionResource{
 	Resource: "postgresqls",
 }
 
+
+
 func GetDynamicClient(isTest bool) (dynamic.Interface, error) {
 	if isTest{
 		return getDynamicClient_Test()
@@ -33,12 +35,23 @@ func GetDynamicClient(isTest bool) (dynamic.Interface, error) {
 }
 
 func getDynamicClient_Test() (dynamic.Interface, error) {
-	scheme := runtime.NewScheme()
+	postgresGVR = schema.GroupVersionResource{
+		Group:    "acid.zalan.do",
+		Version:  "v1",
+		Resource: "postgresqls",
+	}
+
+	// Define GVK for the fake objects
+	gvk := schema.GroupVersionKind{
+		Group:   "acid.zalan.do",
+		Version: "v1",
+		Kind:    "postgresql",
+	}
 
 	cluster1 := &unstructured.Unstructured{
 		Object: map[string]interface{}{
-			"apiVersion": "postgres-operator.crunchydata.com/v1beta1",
-			"kind":       "PostgresCluster",
+			"apiVersion": "acid.zalan.do/v1",
+			"kind":       "postgresql",
 			"metadata": map[string]interface{}{
 				"name":      "pg-cluster-1",
 				"namespace": "default",
@@ -48,11 +61,12 @@ func getDynamicClient_Test() (dynamic.Interface, error) {
 			},
 		},
 	}
+	cluster1.SetGroupVersionKind(gvk)
 
 	cluster2 := &unstructured.Unstructured{
 		Object: map[string]interface{}{
-			"apiVersion": "postgres-operator.crunchydata.com/v1beta1",
-			"kind":       "PostgresCluster",
+			"apiVersion": "acid.zalan.do/v1",
+			"kind":       "postgresql",
 			"metadata": map[string]interface{}{
 				"name":      "pg-cluster-2",
 				"namespace": "dev",
@@ -62,7 +76,10 @@ func getDynamicClient_Test() (dynamic.Interface, error) {
 			},
 		},
 	}
+	cluster2.SetGroupVersionKind(gvk)
 
+	scheme := runtime.NewScheme()
 	client := fake.NewSimpleDynamicClient(scheme, cluster1, cluster2)
 	return client, nil
 }
+

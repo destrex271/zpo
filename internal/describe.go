@@ -8,34 +8,33 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func DescribePostgresqlCluster(namespace, name, output string, istest bool) error {
-	client, err := GetDynamicClient(false)
+func DescribePostgresqlCluster(namespace, name, output string, istest bool) (string, error) {
+	client, err := GetDynamicClient(istest)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	resource, err := client.Resource(postgresGVR).Namespace(namespace).Get(context.TODO(), name, metav1.GetOptions{})
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	jsonBytes, err := resource.MarshalJSON()
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	switch output {
 	case "json":
-		fmt.Println(string(jsonBytes))
+		return string(jsonBytes), nil
 	case "yaml":
 		yamlBytes, err := yaml.JSONToYAML(jsonBytes)
 		if err != nil {
-			return err
+			return "", err
 		}
-		fmt.Println(string(yamlBytes))
+		return string(yamlBytes), nil
 	default:
-		return fmt.Errorf("unsupported output format: %s", output)
+		return "", fmt.Errorf("unsupported output format: %s", output)
 	}
-	return nil
 }
 
