@@ -27,7 +27,7 @@ func DescribePostgresqlCluster(namespace, name, output string) error {
 	switch output {
 	case "json":
 		fmt.Println(string(jsonBytes))
-	case "yaml", "":
+	case "yaml":
 		yamlBytes, err := yaml.JSONToYAML(jsonBytes)
 		if err != nil {
 			return err

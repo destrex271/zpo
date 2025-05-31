@@ -4,16 +4,11 @@ import (
 	"context"
 	"fmt"
 
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/runtime/schema"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 )
 
-var postgresGVR = schema.GroupVersionResource{
-	Group:    "acid.zalan.do",
-	Version:  "v1",
-	Resource: "postgresqls",
-}
+
 
 func ListPostgresqlClusters(namespace string) error {
 	client, err := GetDynamicClient()
@@ -29,6 +24,13 @@ func ListPostgresqlClusters(namespace string) error {
 	}
 	if err != nil {
 		return err
+	}
+
+	if len(list.Items) == 0{
+		if namespace == ""{
+			return fmt.Errorf("No postgres resources available across namespaces!")
+		}
+		return fmt.Errorf("No postgres resources available in the namespace '%s'", namespace)
 	}
 
 	for _, item := range list.Items {

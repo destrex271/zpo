@@ -18,14 +18,20 @@ func main(){
 		if err != nil {
 			log.Fatal("Error parsing list arguments: ", err)
 		}
-		internal.ListPostgresqlClusters(listArgs.Namespace)
+
+		err = internal.ListPostgresqlClusters(listArgs.Namespace)
+		if err != nil{
+			log.Fatal("Error executing list: ", err.Error())
+		}
 
 	case "describe":
-		log.Println(args)
 		describeArgs, err := GetDescribeArgs(args)
 		if err != nil {
 			log.Fatal("Error parsing describe args: ", err)
 		}
-		internal.DescribePostgresqlCluster(describeArgs.Namespace, describeArgs.ClusterName, describeArgs.OutputFile)
+		err = internal.DescribePostgresqlCluster(describeArgs.Namespace, describeArgs.ClusterName, describeArgs.OutputFile)
+		if err != nil{
+			log.Fatal("Error executing describe: ", err.Error())
+		}
 	}
 }
