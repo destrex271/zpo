@@ -1,0 +1,22 @@
+apiVersion: "acid.zalan.do/v1"
+kind: postgresql
+metadata:
+  name: my-cluster
+spec:
+  teamId: "acid"
+  volume:
+    size: 1Gi
+  numberOfInstances: 2
+  users:
+    zalando:  # database owner
+    - superuser
+    - createdb
+    akshat:
+    - superuser
+    - createdb
+  databases:
+    foo: zalando  # dbname: owner
+  preparedDatabases:
+    bar: {}
+  postgresql:
+    version: "17"
